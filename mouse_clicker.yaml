@@ -1,0 +1,116 @@
+# button position
+actions:
+  - type: tab1
+    x: 1947
+    y: 36
+    event: mouse_click
+    button: left
+    clicks: 1
+    interval_sec: 0.1
+    delay_sec: 1
+
+  - type: tab2
+    x: 100
+    y: 200
+    event: mouse_click
+    button: left
+    clicks: 1
+    interval_sec: 0.1
+    delay_sec: 1
+
+  - type: tab3
+    x: 100
+    y: 200
+    event: mouse_click
+    button: left
+    clicks: 1
+    interval_sec: 0.1
+    delay_sec: 1
+
+  - type: play_resume
+    x: 44
+    y: 781
+    event: mouse_click
+    button: left
+    clicks: 1
+    interval_sec: 0.1
+    delay_sec: 1
+
+  - type: vedio_setting
+    x: 2143
+    y: 786
+    event: mouse_click
+    button: left
+    clicks: 1
+    interval_sec: 0.1
+    delay_sec: 1
+
+  - type: vedio_speed_button
+    x: 2103
+    y: 670
+    event: mouse_click
+    button: left
+    clicks: 1
+    interval_sec: 0.1
+    delay_sec: 1
+
+  - type: vedio_speed_1.5x
+    x: 2043
+    y: 703
+    event: mouse_click
+    button: left
+    clicks: 1
+    interval_sec: 0.1
+    delay_sec: 1
+
+  # - type: play_resume
+  #   x: 100
+  #   y: 200
+  #   event: mouse_click
+  #   button: left
+  #   clicks: 1
+  #   interval_sec: 0.1
+  #   delay_sec: 0.5
+
+  - type: vedio_cpature_button
+    x: 100
+    y: 200
+    event: mouse_click
+    button: left
+    clicks: 1
+    interval_sec: 0.1
+    delay_sec: 0.5
+
+  - type: wait_time
+    event: timer
+    delay_sec: 30
+    
+worklist:
+  # - tab1
+  # - play_resume
+  # - play_resume
+  # - vedio_setting
+  # - vedio_speed_button
+  # - vedio_speed_1.5x
+  # - play_resume
+  # - vedio_cpature_button
+  - wait_time
+
+# worklist:[tabe1, play_resume, play_resume, vedio_setting, vedio_speed_button, vedio_speed_1.5x, play_resume, vedio_cpature_button, wait_time]
+
+# Or multiple actions (list):
+# - x: 100
+#   y: 200
+#   button: left
+#   clicks: 1
+#   delay_sec: 1.0
+# - x: 300
+#   y: 400
+#   button: right
+#   clicks: 2
+#   interval_sec: 0.2
+
+# Track mouse position (prints "x,y" continuously):
+# - type: track
+#   interval_sec: 0.1
+#   duration_sec: 5
