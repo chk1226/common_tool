@@ -1,26 +1,44 @@
 # button position
 actions:
   - type: tab1
-    x: 1947
+    x: 117
     y: 36
     event: mouse_click
     button: left
-    clicks: 1
+    clicks: 1.5
     interval_sec: 0.1
     delay_sec: 1
 
-  - type: tab2
-    x: 100
-    y: 200
+  # - type: tab2
+  #   x: 281
+  #   y: 35
+  #   event: mouse_click
+  #   button: left
+  #   clicks: 1
+  #   interval_sec: 0.1
+  #   delay_sec: 1
+
+  # - type: tab3
+  #   x: 356
+  #   y: 35
+  #   event: mouse_click
+  #   button: left
+  #   clicks: 1
+  #   interval_sec: 0.1
+  #   delay_sec: 1
+
+  - type: delete_tab
+    x: 136
+    y: 35
     event: mouse_click
     button: left
-    clicks: 1
+    clicks: 1.5
     interval_sec: 0.1
     delay_sec: 1
-
-  - type: tab3
-    x: 100
-    y: 200
+  
+  - type: delete_tab2
+    x: 156
+    y: 39
     event: mouse_click
     button: left
     clicks: 1
@@ -28,64 +46,88 @@ actions:
     delay_sec: 1
 
   - type: play_resume
-    x: 44
-    y: 781
+    x: 70
+    y: 734
     event: mouse_click
     button: left
-    clicks: 1
+    clicks: 1.5
     interval_sec: 0.1
     delay_sec: 1
 
   - type: vedio_setting
-    x: 2143
-    y: 786
+    x: 851
+    y: 737
     event: mouse_click
     button: left
-    clicks: 1
+    clicks: 1.5
     interval_sec: 0.1
     delay_sec: 1
 
   - type: vedio_speed_button
-    x: 2103
-    y: 670
+    x: 843
+    y: 624
     event: mouse_click
     button: left
-    clicks: 1
+    clicks: 1.5
     interval_sec: 0.1
     delay_sec: 1
 
   - type: vedio_speed_1.5x
-    x: 2043
-    y: 703
+    x: 657
+    y: 653
     event: mouse_click
     button: left
-    clicks: 1
+    clicks: 1.5
     interval_sec: 0.1
     delay_sec: 1
 
-  # - type: play_resume
-  #   x: 100
-  #   y: 200
-  #   event: mouse_click
-  #   button: left
-  #   clicks: 1
-  #   interval_sec: 0.1
-  #   delay_sec: 0.5
-
-  - type: vedio_cpature_button
-    x: 100
-    y: 200
+  - type: vedio_cpature_button_start
+    x: 223
+    y: 99
     event: mouse_click
     button: left
-    clicks: 1
+    clicks: 1.5
     interval_sec: 0.1
-    delay_sec: 0.5
+    delay_sec: 3
+
+  - type: vedio_cpature_button_stop
+    x: 187
+    y: 105
+    event: mouse_click
+    button: left
+    clicks: 1.5
+    interval_sec: 0.1
+    delay_sec: 3
 
   - type: wait_time
     event: timer
-    delay_sec: 30
+    delay_sec: 7205
     
 worklist:
+  - tab1
+  - play_resume
+  - play_resume
+  - vedio_setting
+  - vedio_speed_button
+  - vedio_speed_1.5x
+  - play_resume
+  - vedio_cpature_button_start
+  - wait_time
+  # - vedio_cpature_button_stop
+  - delete_tab
+  - delete_tab2
+  - tab1
+  - play_resume
+  - play_resume
+  - vedio_setting
+  - vedio_speed_button
+  - vedio_speed_1.5x
+  - play_resume
+  - vedio_cpature_button_start
+  - wait_time
+  # - vedio_cpature_button_stop
+  - delete_tab
+  - delete_tab2
   # - tab1
   # - play_resume
   # - play_resume
@@ -93,10 +135,14 @@ worklist:
   # - vedio_speed_button
   # - vedio_speed_1.5x
   # - play_resume
-  # - vedio_cpature_button
-  - wait_time
+  # - vedio_cpature_button_start
+  # - wait_time
+  # # - vedio_cpature_button_stop
+  # - delete_tab
+  # - delete_tab2
 
-# worklist:[tabe1, play_resume, play_resume, vedio_setting, vedio_speed_button, vedio_speed_1.5x, play_resume, vedio_cpature_button, wait_time]
+
+
 
 # Or multiple actions (list):
 # - x: 100
