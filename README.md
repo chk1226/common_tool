@@ -55,6 +55,7 @@ Key features:
 - Cursor tracking mode (prints `x,y` continuously)
 - Countdown helper
 - Progress-bar sleep for timed waits
+- Windows DPI-aware startup and scale-factor detection
 
 Install optional dependencies:
 
@@ -71,6 +72,18 @@ Supported action types:
 
 - `event: timer`
 - `event: mouse_click`
+
+Mouse click action fields:
+
+- `type`: action name referenced by `worklist`
+- `event`: `mouse_click`
+- `button`: `left`, `right`, or `middle`
+- `x`, `y`: click coordinates
+- `clicks`: number of clicks
+- `interval_sec`: delay between repeated clicks
+- `delay_sec`: delay after the click action completes
+- `match_image_path`: optional template image path
+- `region_x`, `region_y`, `region_width`, `region_height`: optional image-search region
 
 Example config:
 
@@ -122,3 +135,5 @@ Notes:
 - If `match_image_path` is provided, the script searches that image inside the given region and uses the matched position as the click target.
 - If the image is not found above the threshold, that click action is skipped.
 - Timer actions currently use the terminal progress bar helper during the wait.
+- On Windows, the script enables DPI awareness and prints the detected system scale factor at startup.
+- Manual `x` / `y` coordinates are currently multiplied by the detected DPI scale factor, while image-match positions are used directly from screen pixels.

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import ctypes
 import sys
 import time
 import vedio_util
@@ -8,6 +9,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Literal, Optional
 
+DPI_SCALE_FACTOR : Optional[float]
 
 try:
     from pynput.mouse import Button, Controller
@@ -259,6 +261,26 @@ def progress_sleep(duration_sec: float, *, width: int = 30, update_hz: float = 2
         sys.stdout.flush()
 
 
+def set_process_dpi_aware() -> None:
+    """
+    Best-effort Windows DPI fix.
+
+    This helps keep screen-capture coordinates and mouse coordinates aligned
+    when Windows display scaling is not 100%.
+    """
+    if sys.platform != "win32":
+        return
+    try:
+        ctypes.windll.user32.SetProcessDPIAware()
+    except Exception:
+        pass
+
+def get_system_scale_factor() -> float:
+    user32 = ctypes.windll.user32
+    dpi = user32.GetDpiForSystem()
+    return dpi / 96.0
+
+
 def _load_config(path: Path) -> tuple[list, list[dict]]:
     raw = yaml.safe_load(path.read_text(encoding="utf-8"))
     worklist = raw.get("worklist")
@@ -285,6 +307,11 @@ def _parse_args(argv: list[str]) -> argparse.Namespace:
 
 
 def main(argv: Optional[list[str]] = None) -> int:
+    set_process_dpi_aware()
+    global DPI_SCALE_FACTOR
+    DPI_SCALE_FACTOR = get_system_scale_factor()
+    print(f"System DPI scale factor: {DPI_SCALE_FACTOR:.2f}")
+    
     args = _parse_args(sys.argv[1:] if argv is None else argv)
     config_path = vedio_util.resolve_path(Path(args.config))
     if not config_path.exists():
@@ -317,8 +344,8 @@ def main(argv: Optional[list[str]] = None) -> int:
                     action_type = action.get("type"),
                     event = event,
                     button = action.get("button"),
-                    x = int(action.get("x")) if action.get("x") is not None else None,
-                    y = int(action.get("y")) if action.get("y") is not None else None,
+                    x = int(action.get("x")) * DPI_SCALE_FACTOR if action.get("x") is not None else None,
+                    y = int(action.get("y")) * DPI_SCALE_FACTOR if action.get("y") is not None else None,
                     clicks = int(action.get("clicks", 1)),
                     interval_sec = float(action.get("interval_sec")),
                     delay_sec = float(action.get("delay_sec")),
@@ -350,9 +377,9 @@ def main(argv: Optional[list[str]] = None) -> int:
             elif action_obj.event == Action.MOUSE_CLICK_EVENT:
                 if action_obj.match_image_path is not None:
                     region = ScreenRegion(
-                        left=action_obj.region_x or 0,
-                        top=action_obj.region_y or 0,
-                        width=action_obj.region_width or 1920,
+                        left=action_obj.region_x  or 0,
+                        top=action_obj.region_y  or 0,
+                        width=action_obj.region_width  or 1920,
                         height=action_obj.region_height or 1080
                     )
                     pos = find_image_in_region(
@@ -367,6 +394,7 @@ def main(argv: Optional[list[str]] = None) -> int:
                     else:
                         action_obj.set_position(*pos)
                         print(f"Image found for action type {action_obj.action_type} at position {pos}.")
+                
                 mouse_click(action_obj)
                      
          

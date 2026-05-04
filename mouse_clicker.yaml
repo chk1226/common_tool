@@ -1,13 +1,13 @@
 # button position
 actions:
   - type: tab1
-    x: 117
-    y: 36
+    x: 116
+    y: 35
     event: mouse_click
     button: left
-    clicks: 1.5
+    clicks: 1
     interval_sec: 0.1
-    delay_sec: 1
+    delay_sec: 1.5
 
   #test
   # - type: tab2
@@ -22,58 +22,58 @@ actions:
 
   - type: delete_tab
     match_image_path: "close_tab_img.png"
-    region_x: 63
-    region_y: 32
-    region_width: 3111
-    region_height: 60
+    region_x: 50
+    region_y: 36
+    region_width: 1190
+    region_height: 46
     event: mouse_click
     button: left
-    clicks: 1.5
+    clicks: 1
     interval_sec: 0.1
-    delay_sec: 1
+    delay_sec: 1.5
   
   - type: play_resume
     x: 70
     y: 734
     event: mouse_click
     button: left
-    clicks: 1.5
+    clicks: 1
     interval_sec: 0.1
-    delay_sec: 1
+    delay_sec: 2
 
   - type: vedio_setting
     x: 851
     y: 737
     event: mouse_click
     button: left
-    clicks: 1.5
+    clicks: 1
     interval_sec: 0.1
-    delay_sec: 1
+    delay_sec: 1.5
 
   - type: vedio_speed_button
     x: 843
     y: 624
     event: mouse_click
     button: left
-    clicks: 1.5
+    clicks: 1
     interval_sec: 0.1
-    delay_sec: 1
+    delay_sec: 1.5
 
   - type: vedio_speed_1.5x
     x: 657
     y: 653
     event: mouse_click
     button: left
-    clicks: 1.5
+    clicks: 1
     interval_sec: 0.1
-    delay_sec: 1
+    delay_sec: 1.5
 
   - type: vedio_cpature_button_start
     x: 223
     y: 99
     event: mouse_click
     button: left
-    clicks: 1.5
+    clicks: 1
     interval_sec: 0.1
     delay_sec: 3
 
@@ -82,13 +82,13 @@ actions:
     y: 105
     event: mouse_click
     button: left
-    clicks: 1.5
+    clicks: 1
     interval_sec: 0.1
     delay_sec: 3
 
   - type: wait_time
     event: timer
-    delay_sec: 7205
+    delay_sec: 7210
     
 worklist:
   - tab1
@@ -103,19 +103,30 @@ worklist:
   # - vedio_cpature_button_stop
   - delete_tab
   # CAPTURE FINSH!!
-  # - tab1
-  # - play_resume
-  # - play_resume
-  # - vedio_setting
-  # - vedio_speed_button
-  # - vedio_speed_1.5x
-  # - play_resume
-  # - vedio_cpature_button_start
-  # - wait_time
-  # # - vedio_cpature_button_stop
-  # - delete_tab
+  - tab1
+  - play_resume
+  - play_resume
+  - vedio_setting
+  - vedio_speed_button
+  - vedio_speed_1.5x
+  - play_resume
+  - vedio_cpature_button_start
+  - wait_time
+  # - vedio_cpature_button_stop
+  - delete_tab
   # CAPTURE FINSH!!
-
+  - tab1
+  - play_resume
+  - play_resume
+  - vedio_setting
+  - vedio_speed_button
+  - vedio_speed_1.5x
+  - play_resume
+  - vedio_cpature_button_start
+  - wait_time
+  # - vedio_cpature_button_stop
+  - delete_tab
+  # CAPTURE FINSH!!
 
 
 # Or multiple actions (list):
