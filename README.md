@@ -45,26 +45,40 @@ Notes:
 
 File: `mouse_clicker.py`
 
-This script reads a YAML config and executes a simple automation workflow:
+This script reads a YAML config and executes a simple automation workflow.
 
-- Mouse click actions (optional x/y move first)
-- Timer delays
-- Track cursor position (prints `x,y` continuously)
-- Optional 3-second countdown helper (prints once per second)
-- Optional progress-bar sleep helper (`progress_sleep`, call explicitly in code)
+Key features:
+
+- Mouse click actions, with optional direct `x` / `y` coordinates
+- Timer actions in a `worklist`
+- Image matching inside a screen region before clicking
+- Cursor tracking mode (prints `x,y` continuously)
+- Countdown helper
+- Progress-bar sleep for timed waits
 
 Install optional dependencies:
 
 ```powershell
-pip install pynput pyyaml
+pip install pynput pyyaml opencv-python mss numpy
 ```
 
-Example config (see `mouse_clicker.example.yaml`):
+YAML structure:
+
+- `worklist`: the execution order
+- `actions`: the action definitions referenced by `worklist`
+
+Supported action types:
+
+- `event: timer`
+- `event: mouse_click`
+
+Example config:
 
 ```yaml
 worklist:
   - click1
   - wait1
+  - click_by_image
 
 actions:
   - type: click1
@@ -78,6 +92,17 @@ actions:
   - type: wait1
     event: timer
     delay_sec: 5
+  - type: click_by_image
+    event: mouse_click
+    button: left
+    clicks: 1
+    interval_sec: 0.1
+    delay_sec: 0.5
+    match_image_path: target.png
+    region_x: 0
+    region_y: 0
+    region_width: 1920
+    region_height: 1080
 ```
 
 Run:
@@ -85,3 +110,15 @@ Run:
 ```powershell
 python mouse_clicker.py --config mouse_clicker.yaml
 ```
+
+Track the current mouse position:
+
+```powershell
+python mouse_clicker.py --track true --config mouse_clicker.yaml
+```
+
+Notes:
+
+- If `match_image_path` is provided, the script searches that image inside the given region and uses the matched position as the click target.
+- If the image is not found above the threshold, that click action is skipped.
+- Timer actions currently use the terminal progress bar helper during the wait.

@@ -9,8 +9,9 @@ actions:
     interval_sec: 0.1
     delay_sec: 1
 
+  #test
   # - type: tab2
-  #   x: 281
+  #   x: 1182
   #   y: 35
   #   event: mouse_click
   #   button: left
@@ -18,33 +19,19 @@ actions:
   #   interval_sec: 0.1
   #   delay_sec: 1
 
-  # - type: tab3
-  #   x: 356
-  #   y: 35
-  #   event: mouse_click
-  #   button: left
-  #   clicks: 1
-  #   interval_sec: 0.1
-  #   delay_sec: 1
 
   - type: delete_tab
-    x: 136
-    y: 35
+    match_image_path: "close_tab_img.png"
+    region_x: 63
+    region_y: 32
+    region_width: 3111
+    region_height: 60
     event: mouse_click
     button: left
     clicks: 1.5
     interval_sec: 0.1
     delay_sec: 1
   
-  - type: delete_tab2
-    x: 156
-    y: 39
-    event: mouse_click
-    button: left
-    clicks: 1
-    interval_sec: 0.1
-    delay_sec: 1
-
   - type: play_resume
     x: 70
     y: 734
@@ -115,19 +102,7 @@ worklist:
   - wait_time
   # - vedio_cpature_button_stop
   - delete_tab
-  - delete_tab2
-  - tab1
-  - play_resume
-  - play_resume
-  - vedio_setting
-  - vedio_speed_button
-  - vedio_speed_1.5x
-  - play_resume
-  - vedio_cpature_button_start
-  - wait_time
-  # - vedio_cpature_button_stop
-  - delete_tab
-  - delete_tab2
+  # CAPTURE FINSH!!
   # - tab1
   # - play_resume
   # - play_resume
@@ -139,8 +114,7 @@ worklist:
   # - wait_time
   # # - vedio_cpature_button_stop
   # - delete_tab
-  # - delete_tab2
-
+  # CAPTURE FINSH!!
 
 
 

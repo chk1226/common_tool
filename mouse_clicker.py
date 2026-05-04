@@ -4,6 +4,7 @@ import argparse
 import sys
 import time
 import vedio_util
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Literal, Optional
 
@@ -22,7 +23,6 @@ except ModuleNotFoundError as exc:  # pragma: no cover
         "Missing dependency: PyYAML. Install with:\n  pip install pyyaml"
     ) from exc
 
-
 class Action:
     TIMER_EVENT = "timer"
     MOUSE_CLICK_EVENT = "mouse_click"
@@ -39,11 +39,17 @@ class Action:
     interval_sec: Optional[float]
     clicks: Optional[int]
     delay_sec: Optional[float]
+    match_image_path: Optional[str]
+    region_x: Optional[int]
+    region_y: Optional[int]
+    region_width: Optional[int]
+    region_height: Optional[int]
     
     def __init__(self, action_type: str = "", event: Optional[str] = None, button: Optional[str] = None, 
-                 x: Optional[int] = None, y: Optional[int] = None, 
-                 interval_sec: Optional[float] = None, clicks: Optional[int] = None, 
-                 delay_sec: Optional[float] = None):
+                x: Optional[int] = None, y: Optional[int] = None, 
+                interval_sec: Optional[float] = None, clicks: Optional[int] = None, 
+                delay_sec: Optional[float] = None, match_image_path: Optional[str] = None, 
+                region_x: Optional[int] = None, region_y: Optional[int] = None, region_width: Optional[int] = None, region_height: Optional[int] = None):
         self.action_type = action_type
         self.event = event
         self.button = button
@@ -52,7 +58,12 @@ class Action:
         self.interval_sec = interval_sec
         self.clicks = clicks
         self.delay_sec = delay_sec
-    
+        self.match_image_path = match_image_path
+        self.region_x = region_x
+        self.region_y = region_y
+        self.region_width = region_width
+        self.region_height = region_height
+        
     def set_position(self, x: int, y: int) -> None:
         self.x = x
         self.y = y
@@ -62,6 +73,86 @@ class Action:
             return (self.x, self.y)
         return None
     
+
+
+@dataclass(frozen=True)
+class ScreenRegion:
+    left: int
+    top: int
+    width: int
+    height: int
+
+    def to_mss_monitor(self) -> dict[str, int]:
+        if self.width <= 0 or self.height <= 0:
+            raise ValueError("width/height must be > 0")
+        return {"left": self.left, "top": self.top, "width": self.width, "height": self.height}
+
+
+def find_image_in_region(
+    template_image_path: str | Path,
+    region: ScreenRegion,
+    *,
+    threshold: float = 0.95,
+    return_center: bool = True,
+) -> Optional[tuple[int, int]]:
+    """
+    Find a template image on screen within a specific region.
+
+    Returns (x, y) in absolute screen coordinates when matched; otherwise None.
+    """
+    if not (0.0 < threshold <= 1.0):
+        raise ValueError("threshold must be in (0, 1]")
+
+    try:
+        import cv2  # type: ignore
+        import mss  # type: ignore
+        import numpy as np  # type: ignore
+    except ModuleNotFoundError as exc:  # pragma: no cover
+        missing = str(exc).split("No module named")[-1].strip().strip("'").strip('"')
+        raise ModuleNotFoundError(
+            f"Missing dependency: {missing}. Install with:\n"
+            "  pip install opencv-python mss numpy\n"
+        ) from exc
+
+    template_path = vedio_util.resolve_path(template_image_path)
+
+    template = cv2.imread(str(template_path), cv2.IMREAD_UNCHANGED)
+    if template is None:
+        raise ValueError(f"Failed to read template image: {template_path}")
+
+    # Drop alpha if present, then convert to grayscale for matching.
+    if template.ndim == 3 and template.shape[2] >= 3:
+        template_bgr = template[:, :, :3]
+    else:
+        template_bgr = template
+    template_gray = cv2.cvtColor(template_bgr, cv2.COLOR_BGR2GRAY)
+
+    monitor = region.to_mss_monitor()
+    with mss.MSS() as sct:
+        shot = sct.grab(monitor)  # BGRA
+        screen_bgr = np.asarray(shot)[:, :, :3]  # BGR
+
+    screen_gray = cv2.cvtColor(screen_bgr, cv2.COLOR_BGR2GRAY)
+
+    if template_gray.shape[0] > screen_gray.shape[0] or template_gray.shape[1] > screen_gray.shape[1]:
+        raise ValueError("Template image is larger than the search region.")
+
+    result = cv2.matchTemplate(screen_gray, template_gray, cv2.TM_CCOEFF_NORMED)
+    _, max_val, _, max_loc = cv2.minMaxLoc(result)
+
+    if max_val < threshold:
+        print(f"No match found position (max_val={max_val:.4f} < threshold={threshold:.4f})")
+        return None
+
+    match_left = region.left + int(max_loc[0])
+    match_top = region.top + int(max_loc[1])
+
+    if not return_center:
+        return (match_left, match_top)
+
+    center_x = match_left + int(template_gray.shape[1] // 2)
+    center_y = match_top + int(template_gray.shape[0] // 2)
+    return (center_x, center_y)
 
 
 def mouse_click(
@@ -230,7 +321,12 @@ def main(argv: Optional[list[str]] = None) -> int:
                     y = int(action.get("y")) if action.get("y") is not None else None,
                     clicks = int(action.get("clicks", 1)),
                     interval_sec = float(action.get("interval_sec")),
-                    delay_sec = float(action.get("delay_sec"))
+                    delay_sec = float(action.get("delay_sec")),
+                    match_image_path = action.get("match_image_path", None),
+                    region_x = int(action.get("region_x", 0)),
+                    region_y = int(action.get("region_y", 0)),
+                    region_width = int(action.get("region_width", 0)),
+                    region_height = int(action.get("region_height", 0))
                 )
             
             action_dict[action.get("type")] = action_boj
@@ -252,6 +348,25 @@ def main(argv: Optional[list[str]] = None) -> int:
                     print(f"Action type {action_obj.action_type}: starts in {delay} seconds... (Ctrl+C to cancel)")
                     progress_sleep(delay, label=f"Action type {action_obj.action_type} {action_obj.delay_sec}s")
             elif action_obj.event == Action.MOUSE_CLICK_EVENT:
+                if action_obj.match_image_path is not None:
+                    region = ScreenRegion(
+                        left=action_obj.region_x or 0,
+                        top=action_obj.region_y or 0,
+                        width=action_obj.region_width or 1920,
+                        height=action_obj.region_height or 1080
+                    )
+                    pos = find_image_in_region(
+                        template_image_path=action_obj.match_image_path,
+                        region=region,
+                        threshold=0.95,
+                        return_center=True
+                    )
+                    if pos is None:
+                        print(f"Skipping action type {action_obj.action_type} because image not found.")
+                        continue
+                    else:
+                        action_obj.set_position(*pos)
+                        print(f"Image found for action type {action_obj.action_type} at position {pos}.")
                 mouse_click(action_obj)
                      
          
